@@ -12,8 +12,10 @@ import axios from 'axios';
 import createSagaMiddleware from 'redux-saga';
 import {takeEvery, put} from 'redux-saga/effects';
 var moment = require('moment');
+var moment = require('moment-timezone');
 
-console.log(moment().format('YYYY-MM-DD'));
+console.log('Date is', moment().format('YYYY-MM-DD'));
+console.log('Time is', moment().format('HH:mm:ss'));
 
 //watcher saga to take in dispatches
 function* watcherSaga() {
