@@ -41,6 +41,10 @@ router.get('/activators', (req, res) => {
                 console.log('It is true');
                 res.send(result.rows);
             }
+            else if(result.rows[i].time_end == moment().format('HH:mm') && result.rows[i].date == moment().format('YYYY-MM-DD') ){
+                console.log('Question has ended');
+                res.sendStatus(500);
+            }
             else {res.sendStatus(500)}
         }
     })
