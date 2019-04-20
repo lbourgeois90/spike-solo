@@ -43,9 +43,9 @@ router.get('/activators', (req, res) => {
             }
             else if(result.rows[i].time_end == moment().format('HH:mm') && result.rows[i].date == moment().format('YYYY-MM-DD') ){
                 console.log('Question has ended');
-                res.sendStatus(500);
+                res.send('Question has Ended');
             }
-            else {res.sendStatus(500)}
+            else {res.send('No Question Available')}
         }
     })
     .catch((error) =>{
