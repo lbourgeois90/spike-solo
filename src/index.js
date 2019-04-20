@@ -20,8 +20,24 @@ console.log('Time is', moment().format('HH:mm:ss'));
 function* watcherSaga() {;
    yield takeEvery ('GET_CLASSES', getClassesSaga);
    yield takeEvery ('ADD_ACTIVATOR', addActivatorSaga);
-   yield takeEvery ('GET_ACTIVATOR', getActivatorSaga);
+   yield takeEvery ('GET_ACTIVATOR_START', getActivatorStartSaga);
+   yield takeEvery ('GET_ACTIVATOR_END', getActivatorEndSaga);
+   yield takeEvery ('ADD_ANSWER', addAnswerSaga);
 }
+
+
+function* addAnswerSaga(action) {
+    console.log('in addAnswerSaga');
+    try{
+        yield axios.post('/spikesolo/answer', action.payload);
+    }
+    catch (error) {
+        console.log('ERROR IN POST Answer', error);
+        alert(`Sorry! Unable to add answer. Try again later.`)
+    }
+}
+
+console.log('The Date Is', Date.now());
 
 function* getClassesSaga(action){
     console.log('in getClassesSaga');
@@ -36,16 +52,29 @@ function* getClassesSaga(action){
     }
 }
 
-function* getActivatorSaga(action){
-    console.log('in getActivatorSaga');
+function* getActivatorStartSaga(action){
+    console.log('in getActivatorStartSaga');
     try {
-        const response = yield axios.get('/spikesolo/activators');
+        const response = yield axios.get('/spikesolo/activators/start');
         console.log('Activators are', response.data);
-        yield put ({type:'SET_ACTIVATOR', payload: response.data});
+        yield put ({type:'SET_ACTIVATOR_START', payload: response.data});
     }
     catch(error) {
-        console.log('ERROR IN GET ACTIVATOR', error);
-        alert(`Sorry! There was an error getting activators. Try again later.`);
+        console.log('ERROR IN GET ACTIVATOR START', error);
+        alert(`Sorry! There was an error getting activator start. Try again later.`);
+    }
+}
+
+function* getActivatorEndSaga(action){
+    console.log('in getActivatorEndSaga');
+    try {
+        const response = yield axios.get('/spikesolo/activators/end');
+        console.log('End response is', response.data);
+        yield put ({type:'SET_ACTIVATOR_END', payload: response.data});
+    }
+    catch(error) {
+        console.log('ERROR IN GET ACTIVATOR END', error);
+        alert(`Sorry! There was an error getting activator end. Try again later.`);
     }
 }
 
@@ -76,9 +105,12 @@ const getClassesReducer = ( state= [], action) => {
 }
 
 const getActivatorReducer = ( state= [], action) => {
-    if (action.type === 'SET_ACTIVATOR'){
+    if (action.type === 'SET_ACTIVATOR_START'){
         return action.payload
     }
+    if (action.type === 'SET_ACTIVATOR_END'){
+        return action.payload
+    }   
     return state;
 }
 

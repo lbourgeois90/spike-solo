@@ -28,9 +28,9 @@ console.log(currentDate);
     //   setTimeout(getActivatorData, 1000);
 
 
-router.get('/activators', (req, res) => {
+router.get('/activators/start', (req, res) => {
 
-    console.log('in SERVER GET ACTIVATOR');
+    console.log('in SERVER GET ACTIVATOR START');
     pool.query(`SELECT * FROM "questions"`)
     .then((result) => {
         console.log(result.rows);
@@ -39,20 +39,39 @@ router.get('/activators', (req, res) => {
         for(var i = 0; i < result.rows.length; i++) {
             if (result.rows[i].time_start == moment().format('HH:mm') && result.rows[i].date == moment().format('YYYY-MM-DD') ) {
                 console.log('It is true');
-                res.send(result.rows);
-            }
-            else if(result.rows[i].time_end == moment().format('HH:mm') && result.rows[i].date == moment().format('YYYY-MM-DD') ){
-                console.log('Question has ended');
-                res.send('Question has Ended');
-            }
-            else {res.send('No Question Available')}
-        }
+                res.send(result.rows[i]);
+            } 
+         }
+    })
+    .catch((error) =>{
+        console.log(`ERROR IN GET ACTIVATOR START`, error);
+        res.sendStatus(500);
+    })
+})
+
+
+router.get('/activators/end', (req, res) => {
+
+    console.log('in SERVER GET ACTIVATOR END');
+    pool.query(`SELECT * FROM "questions"`)
+    .then((result) => {
+        console.log(result.rows);
+        console.log('Current time is', moment().format('HH:mm') );
+        console.log('Current date is', moment().format('YYYY-MM-DD')); 
+        for(var i = 0; i < result.rows.length; i++) {
+            if (result.rows[i].time_end == moment().format('HH:mm') && result.rows[i].date == moment().format('YYYY-MM-DD') ) {
+                console.log('It has ended');
+                res.send('Question has ended');
+            }  
+         }
     })
     .catch((error) =>{
         console.log(`ERROR IN GET ACTIVATOR`, error);
         res.sendStatus(500);
     })
 })
+
+
 
 
 router.get('/classes', (req, res) => {
@@ -66,6 +85,23 @@ router.get('/classes', (req, res) => {
         res.sendStatus(500);
     })
 })
+
+router.post('/answer', (req, res) => {
+    const newAnswer = req.body;
+    console.log(newAnswer);
+    const sqlText = `INSERT INTO "student_answers" ("answer", "question_id") VALUES ($1, $2);`;
+
+    pool.query(sqlText, 
+        [ newAnswer.answer, newAnswer.question_id]
+    )
+        .then((result) => {
+            res.sendStatus(201);
+        })
+        .catch((error) => {
+            console.log(`ERROR in POSTING ANSWER`, error);
+            res.sendStatus(500);
+        });
+});
 
 
 
