@@ -8,10 +8,11 @@ class StudentSide extends Component {
     
     currentTime= moment().format('HH:mm:ss')
     currentDate= moment().format('YYYY-MM-DD')
-   
     componentDidMount(){
         this.trigger();
+        // this.getTimeAndDate();
     }
+
 
     getTimeAndDate = () => {
         console.log('IN GET TIME AND DATE');
@@ -22,6 +23,7 @@ class StudentSide extends Component {
         .then( (response) => {
           this.props.dispatch({type:'GET_ACTIVATOR', payload: response.data})
           console.log('Response Data', response.data);
+          console.log('Time Start', response.data.time_start);
         
          
         })
@@ -36,7 +38,7 @@ class StudentSide extends Component {
         setInterval(() => { 
             this.getTimeAndDate();
             console.log('Time Is', new Date())
-        }, 5000);
+        }, 60000);
     }
 
  
@@ -59,8 +61,6 @@ class StudentSide extends Component {
     //   }
    
   render() {
-    console.log(this.currentTime);
-    console.log(this.currentDate);
     return (
     
         <section>

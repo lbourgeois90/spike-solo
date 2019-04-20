@@ -4,11 +4,28 @@ const pool = require('../modules/pool');
 var moment = require('moment');
 var cron = require('node-cron');
 var CronJob = require('cron').CronJob;
+var http = require('http');
 
-currentTime= moment().format('HH:mm:ss')
+
+currentTime= moment().format('HH:mm')
 currentDate= moment().format('YYYY-MM-DD')
 console.log(currentTime);
 console.log(currentDate);
+
+
+
+// function getActivatorData() {
+//     console.log('in getActivatorData')
+//       router.get('/activators', (req, res) => {
+//         pool.query(`SELECT * FROM "questions"`)
+//         .then((result) => {
+//             console.log(result.rows);
+//         res.send(result.rows);
+
+//       })
+//     })
+// }
+    //   setTimeout(getActivatorData, 1000);
 
 
 router.get('/activators', (req, res) => {
@@ -16,7 +33,16 @@ router.get('/activators', (req, res) => {
     console.log('in SERVER GET ACTIVATOR');
     pool.query(`SELECT * FROM "questions"`)
     .then((result) => {
-        res.send(result.rows);
+        console.log(result.rows);
+        console.log('Current time is', moment().format('HH:mm') );
+        console.log('Current date is', moment().format('YYYY-MM-DD')); 
+        for(var i = 0; i < result.rows.length; i++) {
+            if (result.rows[i].time_start == moment().format('HH:mm') && result.rows[i].date == moment().format('YYYY-MM-DD') ) {
+                console.log('It is true');
+                res.send(result.rows);
+            }
+            else {res.sendStatus(500)}
+        }
     })
     .catch((error) =>{
         console.log(`ERROR IN GET ACTIVATOR`, error);

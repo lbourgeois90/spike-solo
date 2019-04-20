@@ -76,12 +76,10 @@ const getClassesReducer = ( state= [], action) => {
 }
 
 const getActivatorReducer = ( state= [], action) => {
-    switch (action.type) {
-        case 'SET_ACTIVATOR':
-            return action.payload
-        default:
-            return state;
+    if (action.type === 'SET_ACTIVATOR'){
+        return action.payload
     }
+    return state;
 }
 
 
