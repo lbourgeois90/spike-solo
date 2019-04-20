@@ -12,22 +12,22 @@ import axios from 'axios';
 import createSagaMiddleware from 'redux-saga';
 import {takeEvery, put} from 'redux-saga/effects';
 var moment = require('moment');
-var moment = require('moment-timezone');
 
 console.log('Date is', moment().format('YYYY-MM-DD'));
 console.log('Time is', moment().format('HH:mm:ss'));
 
 //watcher saga to take in dispatches
-function* watcherSaga() {
-   yield takeEvery ('GET_CLASSES', getClassesSaga)
-   yield takeEvery ('ADD_ACTIVATOR', addActivatorSaga)
+function* watcherSaga() {;
+   yield takeEvery ('GET_CLASSES', getClassesSaga);
+   yield takeEvery ('ADD_ACTIVATOR', addActivatorSaga);
+   yield takeEvery ('GET_ACTIVATOR', getActivatorSaga);
 }
 
 function* getClassesSaga(action){
     console.log('in getClassesSaga');
     try {
-        const response = yield axios.get('/spikesolo');
-        console.log('Response is', response);
+        const response = yield axios.get('/spikesolo/classes');
+        console.log('Classes are', response.data);
         yield put ({type:'SET_CLASSES', payload: response.data});
     }
     catch(error) {
@@ -35,6 +35,20 @@ function* getClassesSaga(action){
         alert(`Sorry! There was an error getting classes. Try again later.`);
     }
 }
+
+function* getActivatorSaga(action){
+    console.log('in getActivatorSaga');
+    try {
+        const response = yield axios.get('/spikesolo/activators');
+        console.log('Activators are', response.data);
+        yield put ({type:'SET_ACTIVATOR', payload: response.data});
+    }
+    catch(error) {
+        console.log('ERROR IN GET ACTIVATOR', error);
+        alert(`Sorry! There was an error getting activators. Try again later.`);
+    }
+}
+
 
 function* addActivatorSaga(action) {
     console.log('in addActivatorSaga');
@@ -61,6 +75,14 @@ const getClassesReducer = ( state= [], action) => {
     }
 }
 
+const getActivatorReducer = ( state= [], action) => {
+    switch (action.type) {
+        case 'SET_ACTIVATOR':
+            return action.payload
+        default:
+            return state;
+    }
+}
 
 
 // Create sagaMiddleware
@@ -72,6 +94,7 @@ const sagaMiddleware = createSagaMiddleware();
 const storeInstance = createStore(
     combineReducers({
         getClassesReducer,
+        getActivatorReducer,
     }),
     // Add sagaMiddleware to our store
     applyMiddleware(sagaMiddleware, logger),

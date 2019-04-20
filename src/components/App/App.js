@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { HashRouter as Router, Route} from 'react-router-dom';
 import CreateActivator from '../CreateActivator/CreateActivator';
+import StudentSide from '../StudentSide/StudentSide';
 
 class App extends Component {
   render() {
@@ -9,9 +10,9 @@ class App extends Component {
       <Router>
       <div className="App">
         <header className="App-header">
-         <h1> Spike Project</h1>
         </header>
         <Route exact path='/' component={CreateActivator}/>
+        <Route path='/student' component={StudentSide}/>
       </div>
       </Router>
     );

@@ -1,8 +1,31 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../modules/pool');
+var moment = require('moment');
+var cron = require('node-cron');
+var CronJob = require('cron').CronJob;
 
-router.get('/', (req, res) => {
+currentTime= moment().format('HH:mm:ss')
+currentDate= moment().format('YYYY-MM-DD')
+console.log(currentTime);
+console.log(currentDate);
+
+
+router.get('/activators', (req, res) => {
+
+    console.log('in SERVER GET ACTIVATOR');
+    pool.query(`SELECT * FROM "questions"`)
+    .then((result) => {
+        res.send(result.rows);
+    })
+    .catch((error) =>{
+        console.log(`ERROR IN GET ACTIVATOR`, error);
+        res.sendStatus(500);
+    })
+})
+
+
+router.get('/classes', (req, res) => {
     console.log('in SERVER GET CLASSES');
     pool.query(`SELECT "class_period", "id" FROM "classes" ORDER BY "class_period" ASC`)
     .then((result) => {
@@ -13,6 +36,10 @@ router.get('/', (req, res) => {
         res.sendStatus(500);
     })
 })
+
+
+
+
 
 router.post('/', (req, res) => {
     const newActivator = req.body;
